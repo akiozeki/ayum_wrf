@@ -11,6 +11,10 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 
+import sys
+from pathlib import Path
+# scriptディレクトリを検索パスに追加
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from myFunction.draw_field import draw_grid 
 
 #月を設定

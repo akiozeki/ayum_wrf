@@ -66,6 +66,8 @@ def draw_latlon_contourf(lon, lat, field, projection, domain, cmap, vmin, vmax, 
 #  ax.add_feature(cfeature.LAND,color="gray")
   ax.set_title(fig_title,fontsize=18)
 
+  plt.tight_layout()
+
 
 """
 有意な所のみ描画する
@@ -98,6 +100,7 @@ def draw_latlon_contourf_onlysig(lon, lat, field, projection, domain, cmap, vmin
   ax.coastlines()
 #  ax.add_feature(cfeature.LAND,color="gray")
   ax.set_title(fig_title,fontsize=18)
+  plt.tight_layout()
 
 
 """
@@ -128,6 +131,7 @@ def draw_latlon_contour(lon, lat, field, projection, domain, vmin, vmax, vint, f
   ax.coastlines()
 #  ax.add_feature(cfeature.LAND,color="gray")
   ax.set_title(fig_title,fontsize=18)
+  plt.tight_layout()
 
 
   """

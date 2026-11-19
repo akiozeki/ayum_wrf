@@ -11,6 +11,7 @@ import xarray as xr
 from scipy.stats import ttest_ind
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 
+from myFunction.draw_field import draw_grid
 from myFunction.vertical_cross_section import latlon_to_yx, get_vertical_cross_section
 from myFunction.draw_field import draw_vertical_cross, draw_vertical_cross_onlysig
 from myFunction.ttest_Nstar import ttest_vertical_cross_ensmean
@@ -140,26 +141,8 @@ while n <= N:
         levels=np.arange(0,2000,100),
         transform=ccrs.PlateCarree()
       )
-    #グリッド線の設定
-      gl = ax.gridlines(draw_labels=True, 
-                    linewidth=1, 
-                    color='gray', 
-                    alpha=0.5, 
-                    linestyle='--')
-#ラベルの表示位置を制御
-      gl.xlines = True         # 経度線を描く
-      gl.ylines = True         # 緯度線を描く
-      #gl.xformatter = LONGITUDE_FORMATTER
-      #gl.yformatter = LATITUDE_FORMATTER
-      gl.top_labels = False
-      gl.right_labels = False
-      #gl.xlocator=FixedLocator([127,130,133,136,139])
-      #gl.ylocator=FixedLocator()
-      gl.x_inline = False      # ラベルを図の内側（インライン）に書かない設定
-      gl.y_inline = False      # 緯度も念のため設定
-      gl.ylabel_style = {'rotation': 0}
-      gl.xlabel_style = {'rotation': 0}
-      gl.xpadding = 10
+      
+      draw_grid(ax)
       ax.coastlines()
 
       plt.savefig(f"{fig_dir}/vert_cross_line{start}to({end}.png")
@@ -222,16 +205,19 @@ if have_test == "yes" :
     sign_path=f"{wrfout_dir2}/sign_map_vertcross_{var}_mean_ens.npy"
     np.save(sign_path, sign_map)
     print("Save -> ",sign_path)
-    ens_darray1=enstime_darray1.mean(dim="time", skipna=True)
-    ens_darray2=enstime_darray2.mean(dim="time", skipna=True)
+    
 #時間方向に圧縮   
  
   if use_Nstar == "no":
     sign_map=ttest_vertical_cross(ens_darray1, ens_darray2, 0.95)
 
 #平均値と差を計算
+ens_darray1=np.nanmean(enstime_darray1, axis=0)
+ens_darray2=np.nanmean(enstime_darray2, axis=0)
+#->[time, south_north, west_east]
 ens_mean1=np.nanmean(ens_darray1, axis=0)
 ens_mean2=np.nanmean(ens_darray2, axis=0)
+#[south_north, west_east]
 ens_dif=ens_mean1 - ens_mean2
 
 nan1=np.isnan(ens_mean1)

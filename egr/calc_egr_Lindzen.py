@@ -35,7 +35,7 @@ half_step=step_all // 2
 #アンサンブルメンバー数 / アンサンブル平均したい場合はそのサイズ
 n_ensemble=1
 ensmean="no"
-#"yes" or "no" noの場合以下の要素数は必ず1
+#"yes" or "no" noの場合以下の要素数は必ず1個
 target_members=[1]
 #取り出すメンバ
 

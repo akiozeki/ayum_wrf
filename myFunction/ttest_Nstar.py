@@ -5,19 +5,50 @@ import math
 
 """
 時系列データ(x)の平均, 標準偏差, 有効サンプル数を計算する
+*欠損値がある場合は有効なデータのみ取り出す
 """
 def calc_statistics(x):
-  x_bar=np.mean(x)
-  sigma=np.std(x)
-  N=len(x)
-  r=np.corrcoef(x[0:-1], x[1:])[0,1]
-  #x[0:-1]は配列の初期要素～最終1つ手前，x[1:]は2要素目～最終
-  N_star=N*(1-r)/(1+r)
-#  print("x_bar, sigma, r, N, N_star =")
-#  print([x_bar, sigma, N, N_star])
+  x=np.asarray(x, dtype=float)
+  valid=np.isfinite(x)
+  x_valid = x[valid]
+
+  if len(x_valid) == 0:
+    return np.nan, np.nan, np.nan
+
+  x_bar = np.mean(x_valid)
+  sigma = np.std(x_valid)
+  N = len(x_valid)
+   
+  pair_valid = valid[:-1] & valid[1:]
+#元の時系列で隣接するデータのペアを抽出
+
+  x_a = x[:-1][pair_valid]
+  x_b = x[1:][pair_valid]
+
+#自己相関を計算できるだけのペアがあるか確認
+  if len(x_a) < 2:
+    return x_bar, sigma, np.nan
+
+  r=np.corrcoef(x_a, x_b)[0, 1]
+
+  if not np.isfinite(r) or np.isclose(1 + r, 0):
+    N_star=np.nan
+  else:
+    N_star=N * (1 - r) / (1 + r)
 
   return x_bar, sigma, N_star
 
+# def calc_statistics(x):
+#   x_bar=np.mean(x)
+#   sigma=np.std(x)
+#   N=len(x)
+#   r=np.corrcoef(x[0:-1], x[1:])[0,1]
+#   #x[0:-1]は配列の初期要素～最終1つ手前，x[1:]は2要素目～最終
+#   N_star=N*(1-r)/(1+r)
+# #  print("x_bar, sigma, r, N, N_star =")
+# #  print([x_bar, sigma, N, N_star])
+
+#   return x_bar, sigma, N_star
 
 """
 2つの時系列データ(x1, x2)について母平均の差のt検定を行う

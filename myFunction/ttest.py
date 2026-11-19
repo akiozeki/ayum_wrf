@@ -7,9 +7,23 @@ import math
 時系列データ(x)の平均, 標準偏差, サンプル数を計算する
 """
 def calc_statistics(x):
-  x_bar=np.mean(x)
-  sigma=np.std(x)
-  N=len(x)
+  x=np.asarray(x, dtype=float)
+  valid=np.isfinite(x)
+  x_valid = x[valid]
+
+  if len(x_valid) == 0:
+    return np.nan, np.nan
+
+  x_bar = np.mean(x_valid)
+  sigma = np.std(x_valid)
+  N = len(x_valid)
+   
+  return x_bar, sigma, N
+
+# def calc_statistics(x):
+#   x_bar=np.mean(x)
+#   sigma=np.std(x)
+#   N=len(x)
   #r=np.corrcoef(x[0:-1], x[1:])[0,1]
   #x[0:-1]は配列の初期要素～最終1つ手前，x[1:]は2要素目～最終
   #N_star=N*(1-r)/(1+r)
